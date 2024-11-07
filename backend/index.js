@@ -9,7 +9,11 @@ const userRoutes = require("./routes/user.js")
 const path = require("path");
 
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://frolicking-genie-f70f51.netlify.app',
+  methods: 'GET,POST,PUT,DELETE', 
+  credentials: true 
+}));
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true })); // for form data
