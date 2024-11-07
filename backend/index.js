@@ -10,7 +10,7 @@ const path = require("path");
 
 
 app.use(cors({
-  origin: 'https://frolicking-genie-f70f51.netlify.app',
+  origin: 'https://movementor.netlify.app',
   methods: 'GET,POST,PUT,DELETE', 
   credentials: true 
 }));
