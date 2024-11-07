@@ -8,12 +8,15 @@ const MONGO_URL = process.env.MONGO_URL;
 const userRoutes = require("./routes/user.js")
 const path = require("path");
 
-
 app.use(cors({
   origin: 'https://movementor.netlify.app',
-  methods: 'GET,POST,PUT,DELETE', 
-  credentials: true 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+app.options('*', cors());  // This will enable CORS preflight for all routes
+
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true })); // for form data
