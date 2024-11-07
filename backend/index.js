@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 const MONGO_URL = process.env.MONGO_URL;
 const userRoutes = require("./routes/user.js")
+const path = require("path");
 
 
 app.use(cors());
@@ -39,3 +40,10 @@ mongoose.connect(MONGO_URL)
 app.get("/" , (req,res)=>{
   res.send("hey its me");
 })
+
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+});
