@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://movementor.netlify.app/api/",
+  baseURL: "https://movementor-3lte.onrender.com/api/",
 });
 
 export const UserSignUp = async (data) => API.post("/user/signup", data);
