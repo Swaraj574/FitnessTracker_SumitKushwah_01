@@ -8,12 +8,7 @@ const MONGO_URL = process.env.MONGO_URL;
 const userRoutes = require("./routes/user.js")
 const path = require("path");
 
-app.use(cors({
-  origin: 'https://movementor.netlify.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors());
 
 app.options('*', cors());  // This will enable CORS preflight for all routes
 
