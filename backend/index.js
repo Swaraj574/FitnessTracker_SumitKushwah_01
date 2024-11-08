@@ -6,7 +6,7 @@ const app = express();
 const port = 3000;
 const MONGO_URL = process.env.MONGO_URL;
 const userRoutes = require("./routes/user.js")
-const path = require("path");
+
 
 app.use(cors());
 
@@ -34,18 +34,13 @@ app.listen(port , ()=>{
   console.log(`server is runnig at ${port}`);
 })
 
-mongoose.connect(MONGO_URL)
-.then(()=>console.log("connection secussfull"))
-.catch((e)=> console.log(e))
-
+mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("Connected to MongoDB Atlas")
+  })
+  .catch((err) => console.log("Error connecting to MongoDB:", err));
 
 app.get("/" , (req,res)=>{
   res.send("hey its me");
 })
 
-
-app.use(express.static(path.join(__dirname, 'build')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-});

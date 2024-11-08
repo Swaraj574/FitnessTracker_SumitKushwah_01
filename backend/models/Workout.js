@@ -14,7 +14,8 @@ const WorkoutSchema = new mongoose.Schema(
     workoutName: {
       type: String,
       required: true,
-      unique: true,
+      unique: false, // Ensure that this field is not unique
+      index: false,  // Do not index the field if no uniqueness is required
     },
     sets: {
       type: Number,

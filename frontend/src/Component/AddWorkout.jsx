@@ -40,7 +40,7 @@ const AddWorkout = ({ workout, setWorkout, addNewWorkout, buttonLoading }) => {
 -Workout Name
 -Sets
 -Reps
--Weight
+Weight
 -Duration`}
         value={workout}
         handelChange={(e) => setWorkout(e.target.value)}
