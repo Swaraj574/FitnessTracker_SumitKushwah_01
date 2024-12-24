@@ -46,6 +46,9 @@ const SignIn = () => {
       await UserSignIn({ email, password })
         .then((res) => {
           dispatch(loginSuccess(res.data));
+          const token = res.data.token ;
+          console.log(token);
+          localStorage.setItem('fittrack-app-token', token);
           alert("Login Success");
           setLoading(false);
           setButtonDisabled(false);

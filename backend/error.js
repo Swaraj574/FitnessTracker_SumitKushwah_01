@@ -1,10 +1,15 @@
+// error.js
+class CustomError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
 
 const createError = (status, message) => {
-  const err = new Error();
-  err.status = status;
-  err.message = message;
-  return err;
+  return new CustomError(status, message);
 };
 
-// Export using CommonJS
-module.exports = createError;
+module.exports = {
+  createError,
+};

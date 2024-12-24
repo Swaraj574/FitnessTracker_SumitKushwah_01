@@ -11,7 +11,14 @@ import Contect from "./pages/Contect.jsx";
 import Blogs from "./pages/Blogs.jsx";
 import Clubs from "./pages/Clubs.jsx";
 import Challanges from "./pages/Challanges.jsx";
-import Tutorials from "./pages/Tutorials.jsx";
+
+import TutorialDetail from "./Component/TutorialDetail.jsx";
+import TutorialList from "./pages/TutorialList.jsx";
+import AddTutorial from "./Component/AddTutorial.jsx";
+import BlogDetails from "./Component/BlogDetail.jsx";
+import AddBlog from "./Component/AddBlog.jsx";
+import EditBlog from "./Component/cards/EditBlog.jsx";
+import Chatbot from "./Component/ChatBot.jsx";
 
 const Container = styled.div`
   width: 100%;
@@ -38,14 +45,21 @@ function App() {
               <Route path="/workouts" exact element={<Workouts />} />
               <Route path="/contact" exact element={<Contect />} />
               <Route path="/blogs" exact element={<Blogs />} />
+              <Route path="/blogs/:id" exact element={<BlogDetails/>} />
               <Route path="/clubs" exact element={<Clubs />} />
               <Route path="/challanges" exact element={<Challanges />} />
-              <Route path="/tutorials" exact element={<Tutorials />} />
+              <Route path="/tutorials" exact element={<TutorialList/>} />
+              <Route path="/tutorial/:id"  element={<TutorialDetail/>} />
+              <Route path="/add-tutorial" element={<AddTutorial />} />
+             <Route path="/add-blog" exact element={<AddBlog/>} />
+             <Route path="/edit-blog/:id" exact element ={<EditBlog/>} />
             </Routes>
+            <Chatbot/>
           </Container>
-        ) : (
+        ) : ( 
           <Container>
             <Authentication />
+  
           </Container>
         )}
       </BrowserRouter>

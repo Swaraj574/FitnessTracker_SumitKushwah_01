@@ -1,11 +1,13 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const { createError } = require('../error.js');
+const {createError}  = require("../error.js")
 const User = require("../models/UserModel.js");
 const Workout = require("../models/Workout.js");
 
 dotenv.config();
+
+
 
 const UserRegister = async (req, res, next) => {
   try {
@@ -28,8 +30,9 @@ const UserRegister = async (req, res, next) => {
     });
     const createdUser = await user.save();
     const token = jwt.sign({ id: createdUser._id }, process.env.JWT, {
-      expiresIn: "9999 years",
+      expiresIn: "30m",
     });
+
     return res.status(200).json({ token, user });
   } catch (error) {
     return next(error);
@@ -44,7 +47,7 @@ const UserLogin = async (req, res, next) => {
     if (!user) {
       return next(createError(404, "User not found"));
     }
-    console.log(user);
+    // console.log(user);
 
     const isPasswordCorrect = bcrypt.compareSync(password, user.password);
     if (!isPasswordCorrect) {
@@ -52,8 +55,10 @@ const UserLogin = async (req, res, next) => {
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT, {
-      expiresIn: "9999 years",
+      expiresIn: "7days",
     });
+
+    console.log(token)
 
     return res.status(200).json({ token, user });
   } catch (error) {
@@ -232,7 +237,7 @@ const addWorkout = async (req, res, next) => {
       count++;
       if (line.startsWith("#")) {
         const parts = line.split("\n").map((part) => part.trim());
-        console.log(parts);
+        // console.log(parts);
         if (parts.length < 5) {
           return next(
             createError(400, `Workout string is missing for ${count}th workout`)
@@ -272,7 +277,7 @@ const addWorkout = async (req, res, next) => {
 
 const parseWorkoutLine = (parts) => {
   const details = {};
-  console.log(parts);
+  // console.log(parts);
   if (parts.length >= 5) {
     details.workoutName = parts[1].substring(1).trim();
     details.sets = parseInt(parts[2].split("sets")[0].substring(1).trim());
@@ -282,7 +287,7 @@ const parseWorkoutLine = (parts) => {
     details.weight = parseFloat(parts[3].split("weight")[0].trim());
     details.time = parseFloat(parts[4].split("time")[0].trim());
   }
-  console.log(details);
+  // console.log(details);
   return details;
 };
 
@@ -292,7 +297,6 @@ const calculateCaloriesBurnt = (workout) => {
     1.5 // You can adjust the calorie burn rate as needed
   );
 };
-
 module.exports = {
   UserRegister,
   UserLogin,

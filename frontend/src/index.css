@@ -8,6 +8,7 @@ body {
   font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 
 /* width */
@@ -15,9 +16,7 @@ body {
   width: 2px;
 }
 /* Track */
-::-webkit-scrollbar-track {
-  
-}
+
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
