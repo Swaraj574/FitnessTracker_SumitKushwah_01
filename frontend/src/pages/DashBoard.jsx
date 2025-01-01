@@ -5,8 +5,9 @@ import CountsCard from "../component/cards/CountCard";
 import WeeklyStatCard from "../component/cards/WeeklyStatCard";
 import CategoryChart from "../component/cards/CategoryChart";
 import AddWorkout from "../component/AddWorkout";
-import WorkoutCard from  '../component/cards/WorkoutCard'
+import WorkoutCard from "../component/cards/WorkoutCard";
 import { addWorkout, getDashboardDetails, getWorkouts } from "../api";
+import StreakCard from "../component/cards/StreakCard"; // Import the StreakCard component
 
 const Container = styled.div`
   flex: 1;
@@ -16,6 +17,7 @@ const Container = styled.div`
   padding: 22px 0px;
   overflow-y: scroll;
 `;
+
 const Wrapper = styled.div`
   flex: 1;
   max-width: 1400px;
@@ -26,12 +28,14 @@ const Wrapper = styled.div`
     gap: 12px;
   }
 `;
+
 const Title = styled.div`
   padding: 0px 16px;
   font-size: 22px;
   color: ${({ theme }) => theme.text_primary};
   font-weight: 500;
 `;
+
 const FlexWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -42,16 +46,17 @@ const FlexWrap = styled.div`
     gap: 12px;
   }
 `;
+
 const Section = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0px 16px;
   gap: 22px;
-  padding: 0px 16px;
   @media (max-width: 600px) {
     gap: 12px;
   }
 `;
+
 const CardWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -66,6 +71,7 @@ const CardWrapper = styled.div`
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
+  const [streakData, setStreakData] = useState(null); // New state for streak data
   const [buttonLoading, setButtonLoading] = useState(false);
   const [todaysWorkouts, setTodaysWorkouts] = useState([]);
   const [workout, setWorkout] = useState(`#Legs
@@ -79,10 +85,12 @@ const Dashboard = () => {
     const token = localStorage.getItem("fittrack-app-token");
     await getDashboardDetails(token).then((res) => {
       setData(res.data);
+      setStreakData(res.data.streak); // Fetch and set streak data from the API response
       console.log(res.data);
       setLoading(false);
     });
   };
+
   const getTodaysWorkout = async () => {
     setLoading(true);
     const token = localStorage.getItem("fittrack-app-token");
@@ -111,13 +119,22 @@ const Dashboard = () => {
     dashboardData();
     getTodaysWorkout();
   }, []);
+
   return (
     <Container>
       <Wrapper>
         <Title>Dashboard</Title>
+
+        {/* Add the StreakCard here */}
+        {streakData && (
+          <FlexWrap>
+            <StreakCard streak={streakData} />
+          </FlexWrap>
+        )}
+
         <FlexWrap>
           {counts.map((item) => (
-            <CountsCard item={item} data={data} />
+            <CountsCard key={item.id} item={item} data={data} />
           ))}
         </FlexWrap>
 
@@ -133,10 +150,10 @@ const Dashboard = () => {
         </FlexWrap>
 
         <Section>
-          <Title>Todays Workouts</Title>
+          <Title>Today's Workouts</Title>
           <CardWrapper>
             {todaysWorkouts.map((workout) => (
-              <WorkoutCard workout={workout} />
+              <WorkoutCard key={workout._id} workout={workout} />
             ))}
           </CardWrapper>
         </Section>

@@ -36,6 +36,18 @@ const WorkoutSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    // New fields for Streak feature
+    currentStreak: {
+      type: Number,
+      default: 0,
+    },
+    lastWorkoutDate: {
+      type: Date,
+    },
+    highestStreak: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

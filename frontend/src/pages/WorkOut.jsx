@@ -71,6 +71,12 @@ const SecTitle = styled.div`
   color: ${({ theme }) => theme.text_primary};
   font-weight: 500;
 `;
+const Message = styled.div`
+  font-size: 18px;
+  color: ${({ theme }) => theme.text_secondary};
+  text-align: center;
+  margin-top: 20px;
+`;
 
 const Workouts = () => {
   const dispatch = useDispatch();
@@ -82,7 +88,7 @@ const Workouts = () => {
     setLoading(true);
     const token = localStorage.getItem("fittrack-app-token");
     await getWorkouts(token, date ? `?date=${date}` : "").then((res) => {
-      setTodaysWorkouts(res?.data?.todaysWorkouts);
+      setTodaysWorkouts(res?.data?.todaysWorkouts || []);
       console.log(res.data);
       setLoading(false);
     });
@@ -91,6 +97,7 @@ const Workouts = () => {
   useEffect(() => {
     getTodaysWorkout();
   }, [date]);
+
   return (
     <Container>
       <Wrapper>
@@ -104,14 +111,20 @@ const Workouts = () => {
         </Left>
         <Right>
           <Section>
-            <SecTitle>Todays Workout</SecTitle>
+            <SecTitle>Today's Workout</SecTitle>
             {loading ? (
               <CircularProgress />
             ) : (
               <CardWrapper>
-                {todaysWorkouts.map((workout) => (
-                  <WorkoutCard workout={workout} />
-                ))}
+                {todaysWorkouts.length > 0 ? (
+                  todaysWorkouts.map((workout) => (
+                    <WorkoutCard key={workout.id} workout={workout} />
+                  ))
+                ) : (
+                  <Message>
+                    No workouts today! Stay motivated and keep pushing your limits! 💪
+                  </Message>
+                )}
               </CardWrapper>
             )}
           </Section>

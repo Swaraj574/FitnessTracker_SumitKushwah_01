@@ -47,6 +47,10 @@ const SignUp = () => {
       await UserSignUp({ name, email, password })
         .then((res) => {
           dispatch(loginSuccess(res.data));
+
+          
+          const token = res.data.token ;
+          localStorage.setItem('fittrack-app-token', token);
           
           alert("Account Created Success");
           setLoading(false);

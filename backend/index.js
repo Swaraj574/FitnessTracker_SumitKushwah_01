@@ -9,6 +9,8 @@ const userRoutes = require("./routes/user.js")
 const TutorialRoutes =  require("./routes/tutorials.js")
 const BlogRoutes = require('./routes/blog.js')
 const ChatRoutes =  require("./routes/ChatBot.js")
+const clubRoutes = require("./routes/ClubRoutes.js")
+const challengeRoutes = require('./routes/ChallengeRoute');
 
 
 
@@ -80,7 +82,8 @@ app.use('/api/user/',userRoutes);
 app.use('/api/tutorials/',TutorialRoutes);
 app.use("/api/blogs/", BlogRoutes);
 app.use("/api", ChatRoutes);
-
+app.use("/api/clubs", clubRoutes)
+app.use('/api/challenges', challengeRoutes);
 
 
 app.listen(port , ()=>{  console.log(`server is runnig at ${port}`);

@@ -1,13 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const {createError}  = require("../error.js")
+const { createError } = require("../error.js");
 const User = require("../models/UserModel.js");
 const Workout = require("../models/Workout.js");
 
 dotenv.config();
-
-
 
 const UserRegister = async (req, res, next) => {
   try {
@@ -30,9 +28,10 @@ const UserRegister = async (req, res, next) => {
     });
     const createdUser = await user.save();
     const token = jwt.sign({ id: createdUser._id }, process.env.JWT, {
-      expiresIn: "30m",
+      expiresIn: "60m",
     });
-
+    
+    console.log("this is the token in backend " + token);
     return res.status(200).json({ token, user });
   } catch (error) {
     return next(error);
@@ -47,7 +46,6 @@ const UserLogin = async (req, res, next) => {
     if (!user) {
       return next(createError(404, "User not found"));
     }
-    // console.log(user);
 
     const isPasswordCorrect = bcrypt.compareSync(password, user.password);
     if (!isPasswordCorrect) {
@@ -58,7 +56,8 @@ const UserLogin = async (req, res, next) => {
       expiresIn: "7days",
     });
 
-    console.log(token)
+    
+    console.log("this is the token in login at  backend :" , token )
 
     return res.status(200).json({ token, user });
   } catch (error) {
@@ -124,6 +123,9 @@ const getUserDashboard = async (req, res, next) => {
 
     const weeks = [];
     const caloriesBurnt = [];
+    let streak = 0;
+    let lastWorkoutDate = null;
+
     for (let i = 6; i >= 0; i--) {
       const date = new Date(
         currentDateFormatted.getTime() - i * 24 * 60 * 60 * 1000
@@ -160,6 +162,19 @@ const getUserDashboard = async (req, res, next) => {
       caloriesBurnt.push(
         weekData[0]?.totalCaloriesBurnt ? weekData[0]?.totalCaloriesBurnt : 0
       );
+
+      // Update streak logic
+      if (weekData.length > 0) {
+        if (
+          lastWorkoutDate === null ||
+          (lastWorkoutDate &&
+            startOfDay.getTime() - lastWorkoutDate.getTime() ===
+              24 * 60 * 60 * 1000)
+        ) {
+          streak++;
+        }
+        lastWorkoutDate = startOfDay;
+      }
     }
 
     return res.status(200).json({
@@ -173,6 +188,7 @@ const getUserDashboard = async (req, res, next) => {
         weeks,
         caloriesBurned: caloriesBurnt,
       },
+      streak, // Return streak information
       pieChartData,
     });
   } catch (err) {
@@ -215,6 +231,7 @@ const getWorkoutsByDate = async (req, res, next) => {
   }
 };
 
+
 const addWorkout = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
@@ -237,7 +254,6 @@ const addWorkout = async (req, res, next) => {
       count++;
       if (line.startsWith("#")) {
         const parts = line.split("\n").map((part) => part.trim());
-        // console.log(parts);
         if (parts.length < 5) {
           return next(
             createError(400, `Workout string is missing for ${count}th workout`)
@@ -263,8 +279,47 @@ const addWorkout = async (req, res, next) => {
 
     parsedWorkouts.forEach(async (workout) => {
       workout.caloriesBurned = parseFloat(calculateCaloriesBurnt(workout));
-      await Workout.create({ ...workout, user: userId }); // Ensure user field consistency
+      await Workout.create({ ...workout, user: userId });
     });
+
+    // Update streak after adding a workout
+    const today = new Date();
+    const startToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const endToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
+
+    const todayWorkouts = await Workout.find({
+      user: userId,
+      date: { $gte: startToday, $lt: endToday },
+    });
+
+    if (todayWorkouts.length > 0) {
+      let user = await User.findById(userId);
+      if (user) {
+        const lastWorkoutDate = user.lastWorkoutDate || null;
+        const streak = user.streak || 0;
+
+        if (
+          lastWorkoutDate &&
+          new Date(lastWorkoutDate).getTime() + 24 * 60 * 60 * 1000 ===
+            startToday.getTime()
+        ) {
+          user.streak = streak + 1;
+        } else {
+          user.streak = 1;
+        }
+
+        user.lastWorkoutDate = startToday;
+        await user.save();
+      }
+    }
 
     return res.status(201).json({
       message: "Workouts added successfully",
@@ -277,7 +332,6 @@ const addWorkout = async (req, res, next) => {
 
 const parseWorkoutLine = (parts) => {
   const details = {};
-  // console.log(parts);
   if (parts.length >= 5) {
     details.workoutName = parts[1].substring(1).trim();
     details.sets = parseInt(parts[2].split("sets")[0].substring(1).trim());
@@ -287,7 +341,6 @@ const parseWorkoutLine = (parts) => {
     details.weight = parseFloat(parts[3].split("weight")[0].trim());
     details.time = parseFloat(parts[4].split("time")[0].trim());
   }
-  // console.log(details);
   return details;
 };
 
@@ -297,6 +350,7 @@ const calculateCaloriesBurnt = (workout) => {
     1.5 // You can adjust the calorie burn rate as needed
   );
 };
+
 module.exports = {
   UserRegister,
   UserLogin,
