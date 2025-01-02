@@ -1,32 +1,62 @@
+/* Wrapper for chatbot icon and label */
+.chatbotWrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1000;
+  cursor: grab;
+}
 
+.chatbotWrapper:active {
+  cursor: grabbing;
+}
 
+/* Chatbot icon styling */
 .chatbotIcon {
   width: 60px;
   height: 60px;
   border-radius: 50%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
   background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.2s;
-  z-index: 1000;
 }
 
 .chatbotIcon img {
-  width: 40px;
-  height: 40px;
+  width: 3.5rem;
+  height: 3.5rem;
 }
 
 .chatbotIcon:hover {
   transform: scale(1.1);
 }
 
+/* Initially hide chatbot text */
+.chatbotText {
+  opacity: 0;
+  visibility: hidden;
+  margin-top: 8px; /* Add spacing between icon and text */
+  font-size: 14px;
+  color: #007bff;
+  font-weight: bold;
+  word-wrap: break-word;
+  text-align: center;
+  line-height: 1.2;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+}
 
+/* Show chatbot text on hover */
+.chatbotWrapper:hover .chatbotText {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Chat modal styling */
 .chatModal {
   position: fixed;
   top: 10%;
@@ -43,14 +73,13 @@
   overflow: hidden;
 }
 
-
 .chatContainer {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-
+/* Chat header */
 .chatHeader {
   display: flex;
   justify-content: space-between;
@@ -59,11 +88,17 @@
   color: white;
   padding: 10px 15px;
   border-radius: 15px 15px 0 0;
-  
-  
 }
 
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
 
+/* Chat body styling */
 .chatBody {
   flex-grow: 1;
   overflow-y: auto;
@@ -111,7 +146,7 @@
   margin-bottom: 10px;
 }
 
-
+/* Input section styling */
 .inputContainer {
   display: flex;
   padding: 10px;
@@ -140,15 +175,7 @@
   background-color: #0056b3;
 }
 
-
-.closeButton {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-}
-
+/* Responsive styles */
 @media (max-width: 768px) {
   .chatModal {
     right: 10px;
@@ -172,5 +199,4 @@
     font-size: 14px;
     padding: 8px 12px;
   }
-} 
- 
+}

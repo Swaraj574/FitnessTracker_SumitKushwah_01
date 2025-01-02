@@ -1,8 +1,9 @@
-
 import React, { useState } from "react";
 import Modal from "react-modal";
+import Draggable from "react-draggable"; // Import react-draggable
 import styles from "./Chatbot.module.css"; // Import updated CSS module
-import img1 from "../images/icon.jpeg"
+import img1 from "../images/icon.jpeg";
+
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false); // Modal state
   const [message, setMessage] = useState(""); // Input message
@@ -57,18 +58,23 @@ const Chatbot = () => {
 
   return (
     <>
-      {/* Movable Floating Icon */}
-      <div className={styles.chatbotIcon} onClick={toggleModal}>
-        <img src={img1} alt="AI Trainer" />
-      </div>
+      {/* Draggable Floating Icon and Label */}
+      <Draggable>
+        <div className={styles.chatbotWrapper}>
+          <div className={styles.chatbotIcon} onClick={toggleModal}>
+            <img src={img1} alt="AI Trainer" />
+          </div>
+          <p className={styles.chatbotText}>AI Personal Assistant</p>
+        </div>
+      </Draggable>
 
       {/* Chat Modal */}
       {isOpen && (
         <div className={styles.chatModal}>
           <div className={styles.chatContainer}>
-            <div className={` text-center ${styles.chatHeader}`}>
-              <h2 >Coachly</h2>
-              <button className={` text-end ${styles.closeButton}` }onClick={toggleModal}>
+            <div className={`${styles.chatHeader} text-center`}>
+              <h2>Coachly</h2>
+              <button className={`${styles.closeButton} text-end`} onClick={toggleModal}>
                 ✕
               </button>
             </div>
@@ -104,4 +110,3 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
-

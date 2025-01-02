@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Tutorial = require("./models/Tutorial"); // Adjust the path if needed
+const User =  require("./models/UserModel");
 require("dotenv").config();
 
 mongoose.connect(process.env.MONGO_URL, {
@@ -124,6 +125,7 @@ const seedDB = async () => {
   try {
     await Tutorial.deleteMany();
     await Tutorial.insertMany(dummyTutorials);
+    await User.deleteMany();
     console.log("Dummy tutorials added successfully!");
     await Tutorial.deleteMany();
   } catch (err) {

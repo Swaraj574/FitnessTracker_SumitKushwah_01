@@ -3,7 +3,7 @@ const {verifyToken} = require("../middlewere/VerifyToken.js");
 const User =  require("../models/UserModel.js")
 
 exports.getAllBlogs = async (req, res) => {
-  const { page = 1, limit = 10, category, tags } = req.query;
+  const { page = 1, limit = 20, category, tags } = req.query;
 
   const query = {};
   if (category) query.category = category;
