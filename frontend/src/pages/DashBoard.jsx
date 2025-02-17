@@ -83,58 +83,62 @@ const Dashboard = () => {
   const dashboardData = async () => {
     setLoading(true);
     const token = localStorage.getItem("fittrack-app-token");
-    await getDashboardDetails(token).then((res) => {
+    try {
+      const res = await getDashboardDetails(token);
       setData(res.data);
       setStreakData(res.data.streak); // Fetch and set streak data from the API response
       console.log(res.data);
-      setLoading(false);
-    });
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+    setLoading(false);
   };
 
   const getTodaysWorkout = async () => {
     setLoading(true);
     const token = localStorage.getItem("fittrack-app-token");
-    await getWorkouts(token, "").then((res) => {
+    try {
+      const res = await getWorkouts(token, "");
       setTodaysWorkouts(res?.data?.todaysWorkouts);
       console.log(res.data);
-      setLoading(false);
-    });
+    } catch (error) {
+      console.error("Error fetching today's workouts:", error);
+    }
+    setLoading(false);
   };
 
-  // const addNewWorkout = async () => {
-  //   setButtonLoading(true);
-  //   const token = localStorage.getItem("fittrack-app-token");
-  //   await addWorkout(token, { workoutString: workout })
-  //     .then((res) => {
-  //       dashboardData();
-  //       getTodaysWorkout();
-  //       setButtonLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       alert(err);
-  //     });
-  // };
-
-  const handleStart = async () => {
-    const jwtToken = localStorage.getItem("fittrack-app-token"); // Get token from localStorage
-  
-    if (!jwtToken) {
-      alert("User is not authenticated. Please log in.");
-      return;
-    }
-  
+  const addNewWorkout = async () => {
+    setButtonLoading(true);
+    const token = localStorage.getItem("fittrack-app-token");
     try {
+      await addWorkout(token, { workoutString: workout });
+      await dashboardData();
+      await getTodaysWorkout();
+    } catch (err) {
+      alert(err);
+    }
+    setButtonLoading(false);
+  };
+
+  const startWorkout = async () => {
+    try {
+      const jwtToken = localStorage.getItem("fittrack-app-token"); // Fetch token
+      if (!jwtToken) {
+        alert("No token found. Please login again.");
+        return;
+      }
+
       // Make the API request
       const response = await fetch("http://localhost:3000/start-Workout", {
         method: "GET", // Use GET as specified
         headers: {
-          "Authorization": `Bearer ${jwtToken}`,
+          Authorization: `Bearer ${jwtToken}`,
           "Content-Type": "application/json",
         },
       });
-  
+
       const result = await response.json(); // Parse the response
-  
+
       if (response.ok) {
         console.log("Workout started successfully:", result);
         alert(`Success: ${result.message}\nOutput: ${result.output}`);
@@ -147,9 +151,6 @@ const Dashboard = () => {
       alert(`An unexpected error occurred: ${error.message}`);
     }
   };
-  
-  
-  
 
   useEffect(() => {
     dashboardData();
@@ -177,32 +178,12 @@ const Dashboard = () => {
         <FlexWrap>
           <WeeklyStatCard data={data} />
           <CategoryChart data={data} />
-          {/* <AddWorkout
+          <AddWorkout
             workout={workout}
             setWorkout={setWorkout}
             addNewWorkout={addNewWorkout}
             buttonLoading={buttonLoading}
-          /> */}
-
-<div>
-      <button
-        style={{
-          padding: "10px 20px",
-          fontSize: "18px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-        onClick={handleStart}
-      >
-        Start Workout
-      </button>
-    </div>
-
-
-
+          />
         </FlexWrap>
 
         <Section>
@@ -219,4 +200,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
