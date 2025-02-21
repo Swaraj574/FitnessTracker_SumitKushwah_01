@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Modal from "react-modal";
+// import Modal from "react-modal";
 import Draggable from "react-draggable"; // Import react-draggable
 import styles from "./Chatbot.module.css"; // Import updated CSS module
 import img1 from "../images/icon.jpeg";
