@@ -41,7 +41,6 @@ require('dotenv').config();
 
 exports.ChatBot = async (req, res) => {
   const { message } = req.body;
-
   // Define a refined prompt to keep the chatbot focused
   const refinedPrompt = `
     You are a highly skilled personal trainer and fitness expert AI. 

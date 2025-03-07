@@ -121,7 +121,7 @@ app.get("/start-Workout"  ,  verifyToken, async (req, res) => {
 app.listen(port , ()=>{  console.log(`server is runnig at ${port}`);
 })
 
-mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URL)
   .then(() => {
     console.log("Connected to MongoDB Atlas")
   })
@@ -130,4 +130,5 @@ mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 app.get("/" , (req,res)=>{
   res.send("hey its me");
 })
+
 
